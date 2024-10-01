@@ -1,0 +1,13 @@
+# on: [push, pull_request]
+
+# jobs:
+#   test_wrk:
+#     runs-on: ubuntu-latest
+#     name:  Test Hyperfoil wrk wrapper
+#     steps:
+#       # Required to run the local GH action
+#       - uses: actions/checkout@v4
+#       - uses: ./
+#         with:
+#           hyperfoil-runner: wrk
+#           hyperfoil-params: '-d 5s -c 1 http://hyperfoil.io'

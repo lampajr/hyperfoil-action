@@ -1,0 +1,45 @@
+name: 'Hyperfoil Action'
+description: 'Hyperfoil Github Action'
+# TODO: set inputs and outputs
+inputs:
+  hyperfoil-version:
+    description: 'Hyperfoil release'
+    required: true
+    default: '0.26'
+  hyperfoil-runner:
+    description: 'Hyperfoil benchmark to run'
+    required: true
+    type: choice
+    options:
+     - run
+     - wrk
+     - wrk2
+    default: wrk2
+  hyperfoil-params:
+    description: 'Hyperfoil runner parameters'
+    required: true
+    default: '-R 1 -c 1 http://hyperfoil.io'
+
+runs:
+  using: "composite"
+  steps:
+    # Required to mount the Github Workspace to a volume 
+    - name: Checkout 
+      uses: actions/checkout@v4
+    # Install java, required to run Hyperfoil
+    - name: Install Java
+      uses:  actions/setup-java@v4
+      with:
+        distribution: 'temurin'
+        java-version: '17'
+    - name: Download and extract Hyperfoil
+      working-directory: /tmp
+      shell: bash
+      run: |
+        wget https://github.com/Hyperfoil/Hyperfoil/releases/download/hyperfoil-all-${{ inputs.hyperfoil-version }}/hyperfoil-${{ inputs.hyperfoil-version }}.zip 
+        unzip hyperfoil-${{ inputs.hyperfoil-version }}.zip
+        mv hyperfoil-${{ inputs.hyperfoil-version }} /hf
+    - name: Download and extract Hyperfoil
+      shell: bash
+      run: |
+        /hf/bin/${{ inputs.hyperfoil-runner }}.sh ${{ inputs.hyperfoil-params }}
